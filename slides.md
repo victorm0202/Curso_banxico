@@ -2676,3 +2676,227 @@ Ye Zhang et al., 2016.
 
 
 Ejemplo en Notebook
+
+## Redes recurrentes
+(Rumelhart et al., 1986)
+
+Redes neuronales especializadas para procesar datos secuenciales
+\begin{align*}
+    \mathbf{x}^{(1)}, \mathbf{x}^{(2)},\ldots,\mathbf{x}^{(T)},
+\end{align*}
+
+donde $t\in 1,\ldots, T$ representa la posición en la secuencia (por ejemplo, el tiempo, o la palabra en un texto).
+
+Las secuencias, pueden ser *muy grandes* o ser minibatches de *longitud variable*.
+
+Considera un sistema dinámico
+\begin{align*}
+    \mathbf{h}^{(t)}=f(\mathbf{h}^{(t-1)},\mathbf{x}^{(t)};\boldsymbol{\theta}),
+\end{align*}
+
+donde incorporamos información a través de una señal $\mathbf{x}$ en el tiempo $t$. El sistema es recurrente, ya que el estado $\mathbf{h}^{(t)}$ depende del estado anterior $\mathbf{h}^{(t-1)}$.
+
+Por ejemplo, 
+\begin{align*}
+    \mathbf{h}^{(3)}=f(\mathbf{h}^{(2)},\mathbf{x}^{(3)};\boldsymbol{\theta})=
+    f(f(\mathbf{h}^{(1)},\mathbf{x}^{(3)};\boldsymbol{\theta});\boldsymbol{\theta})
+\end{align*}
+
+Observa que $\boldsymbol{\theta}$ es el mismo para todo $t$, es decir, se comparten los parámetros.
+
+Gráficamente (RNN simple, también llamada "*vanilla*":
+
+<img src="figs/rnn3.png" height="40%" width="40%"/>
+
+Goodfellow et al., 2016.
+
+
+Podemos pensar en las RNN simples como una *extensión* de las redes neuronales donde se les agrega una dinámica temporal:
+
+<img src="figs/vanilla_rnn1.png" height="50%" width="50%"/>
+
+[Curso Stanford](https://nlp.stanford.edu/).
+
+
+Podemos pensar en las RNN simples como una *extensión* de las redes neuronales donde se les agrega una dinámica temporal:
+
+<img src="figs/vanilla_rnn2.png" height="50%" width="50%"/>
+
+[Curso Stanford](https://nlp.stanford.edu/).
+
+
+Podemos pensar en las RNN simples como una *extensión* de las redes neuronales donde se les agrega una dinámica temporal:
+
+<img src="figs/vanilla_rnn3.png" height="50%" width="50%"/>
+
+[Curso Stanford](https://nlp.stanford.edu/).
+
+
+Podemos pensar en las RNN simples como una *extensión* de las redes neuronales donde se les agrega una dinámica temporal:
+
+<img src="figs/vanilla_rnn4.png" height="50%" width="50%"/>
+
+[Curso Stanford](https://nlp.stanford.edu/).
+
+
+Podemos pensar en las RNN simples como una *extensión* de las redes neuronales donde se les agrega una dinámica temporal:
+
+<img src="figs/vanilla_rnn5.png" height="50%" width="50%"/>
+
+[Curso Stanford](https://nlp.stanford.edu/).
+
+
+Podemos pensar en las RNN simples como una *extensión* de las redes neuronales donde se les agrega una dinámica temporal:
+
+<img src="figs/vanilla_rnn6.png" height="50%" width="50%"/>
+
+[Curso Stanford](https://nlp.stanford.edu/).
+
+
+Podemos pensar en las RNN simples como una *extensión* de las redes neuronales donde se les agrega una dinámica temporal:
+
+<img src="figs/vanilla_rnn7.png" height="50%" width="50%"/>
+
+[Curso Stanford](https://nlp.stanford.edu/).
+
+
+Podemos pensar en las RNN simples como una *extensión* de las redes neuronales donde se les agrega una dinámica temporal:
+
+<img src="figs/vanilla_rnn8.png" height="50%" width="50%"/>
+
+[Curso Stanford](https://nlp.stanford.edu/).
+
+
+¿Qué tipo de secuencias podemos modelar?
+
+Básicamente, todas... por ejemplo, recuerda nuestro modelo de lenguaje:
+
+<img src="figs/chat.png" height="40%" width="40%"/>
+
+
+<img src="figs/vanilla_rnn9.png" height="40%" width="40%"/>
+
+
+#### Ajuste. 
+
+Como todas las redes neuronales, el ajuste tiene dos pasos: Forward propagation y Back propagation:
+
+- Forward propagation.
+
+<img src="figs/vanilla_rnn10.png" height="50%" width="50%"/>
+
+donde $J(\theta)$ es una función de costo.
+
+- Forward propagation.
+
+\begin{align*}
+  \begin{array}{rcl}
+    \mathbf{a}^{(t) }& = & \mathbf{W}\mathbf{h}^{(t-1)}+\mathbf{U}\mathbf{x}^{(t)}+ \mathbf{b} \\
+    \mathbf{h}^{(t) }& = & \tanh(\mathbf{a}^{(t) })\\
+    \mathbf{o}^{(t) }& = & \mathbf{V}\mathbf{h}^{(t)}+\mathbf{c} \\
+    \hat{\mathbf{y}}^{(t) }& = & \text{softmax}(\mathbf{o}^{(t) })
+  \end{array}
+\end{align*}
+
+- Backpropagation through time (BPTT).
+
+<img src="figs/vanilla_rnn11.png" height="50%" width="50%"/>
+
+- Backpropagation through time (BPTT).
+
+    - NO entrenamos con la historia completa! (puede ser muy costoso)
+    - Usamos secuencias $\mathbf{x}^{(1)},\ldots,\mathbf{x}^{(T)}$ como una ``ventana'' móvil
+    - Usamos gradiente estocástico
+    - Usamos batches de secuencias
+    - Usamos máxima verosimilitud, por lo tanto, la función de costo es cross-entropy: 
+      \begin{align*}
+        CE(\mathbf{y}^{(t)},\hat{\mathbf{y}}^{(t)})=-\sum_{i} y_i^{(t)} \log \hat{y}_i^{(t)}.
+      \end{align*}
+      Por ejemplo, en el caso de modelos de lenguaje,
+      \begin{align*}
+        CE(\mathbf{y}^{(t)},\hat{\mathbf{y}}^{(t)})=-\sum_{i\in V} y_i^{(t)} \log \hat{y}_i^{(t)}.
+      \end{align*}
+
+- Backpropagation through time (BPTT).
+
+<img src="figs/vanilla_rnn12.png" height="50%" width="50%"/>
+
+- Backpropagation through time (BPTT).
+
+<img src="figs/vanilla_rnn13.png" height="50%" width="50%"/>
+
+- Backpropagation through time (BPTT).
+
+<img src="figs/vanilla_rnn14.png" height="50%" width="50%"/>
+
+- Backpropagation through time (BPTT).
+
+<img src="figs/vanilla_rnn15.png" height="50%" width="50%"/>
+
+- Backpropagation through time (BPTT).
+
+<img src="figs/vanilla_rnn16.png" height="50%" width="50%"/>
+
+### El problema de las dependencias a largo plazo
+
+Considera un modelo de lenguaje para predecir la siguiente palabra:
+
+- "*Las carreras de ciclismo son ____________*"
+- "*Aprendí a programar en Java hace 20 años. Trabajé en varios lugares haciendo diferentes actividades, siendo la programación solo una de ellas, luego decidí estudiar una carrera en computación donde he usado diferentes lenguajes de programación, sin embargo, mi lenguaje de programación favorito sigue siendo ____________*"
+
+En muchos casos, es necesario incorporar información del pasado "*antiguo*"
+
+Intuitivamente
+
+<img src="figs/vanilla_rnn21.png" height="50%" width="50%"/>
+
+Conclusión:
+
+<img src="figs/rnn24.png" height="55%" width="55%"/>
+
+Ocurren dos fenómenos:
+
+- El gradiente explota: usamos *clipping gradients*
+
+<img src="figs/rnn26.png" height="50%" width="50%"/>
+
+Ocurren dos fenómenos:
+
+- El gradiente se desvanece: "*olvidar...*": Gated RNNs:
+        
+    * LSTM (Long Short-Term Memory, Hochreiter et al., 1997)
+    * GRU (Gated Recurrent Units, Cho et al., 2014)
+        
+
+Antes: arquitectura RNN.
+
+<img src="figs/vanilla_rnn22.png" height="50%" width="50%"/>
+
+Arquitectura LSTM.
+
+Nos permite controlar dinámicamente la escala de tiempo y olvidar el comportamiento de diferentes unidades.
+
+<img src="figs/rnn29.png" height="50%" width="50%"/>
+
+Arquitectura LSTM (Resumen):
+
+<img src="figs/lstm_summary.png" height="50%" width="50%"/>
+
+Arquitectura GRU. Simplifican las celdas de las LSTM al *combinar* las compuertas forget y update.
+
+<img src="figs/rnn39.png" height="40%" width="40%"/>
+
+### Redes recurrentes multicapa y bidireccionales
+
+RNN multicapa (stacked):
+<img src="figs/rnn_stack.png" height="45%" width="45%"/>
+
+RNN bidireccionales. Aplicables cuando tenemos acceso a la secuencia completa, por ejemplo, en clasificación de textos.
+
+
+<img src="figs/rnn_bi.png" height="45%" width="45%"/>
+
+RNN bidireccionales. Aplicables cuando tenemos acceso a la secuencia completa, por ejemplo, en clasificación de textos.
+
+
+<img src="figs/rnn_bi2.png" height="45%" width="45%"/>
